@@ -49,6 +49,10 @@ function createMainWindow() {
   });
 
   mainWindow.setAlwaysOnTop(true, "pop-up-menu");
+  mainWindow.setVisibleOnAllWorkspaces(true, {
+    visibleOnFullScreen: true,
+    skipTransformProcessType: false,
+  });
 
   function onload() {
     mainWindow?.focus();
