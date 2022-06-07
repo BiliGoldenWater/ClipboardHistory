@@ -39,7 +39,28 @@ export class ClipboardItem extends React.Component<Props> {
     }
 
     return (
-      <div className={"ClipboardItem"}>
+      <div
+        className={"ClipboardItem"}
+        draggable
+        onDragStart={(event) => {
+          const dataTransfer = event.dataTransfer;
+          dataTransfer.effectAllowed = "copy";
+          dataTransfer.dropEffect = "copy";
+
+          switch (type) {
+            case "text/html": {
+              if (plainText !== "")
+                dataTransfer.setData("text/plain", plainText);
+              else dataTransfer.setData("text/plain", value);
+              break;
+            }
+            case "text/plain": {
+              dataTransfer.setData("text/plain", value);
+              break;
+            }
+          }
+        }}
+      >
         <div
           className={"ClipboardItemContent"}
           onClick={() => {
