@@ -1,0 +1,72 @@
+/*
+ * Copyright 2021-2022 Golden_Water
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.ClipboardItem {
+  transition: all ease-out 0.2s;
+
+  -webkit-app-region: no-drag;
+  user-select: none;
+
+  display: inline-flex;
+  justify-content: space-between;
+
+  word-break: break-all;
+  word-wrap: anywhere;
+
+  overflow-x: clip;
+
+  padding: 0.5em;
+  margin: 0.25em 0.5em;
+
+  max-width: 100vw - (1em * 2);
+  border-radius: 0.5em;
+
+  color: ghostwhite;
+  background-color: #fff1;
+
+  &:hover {
+    background-color: #fff3;
+  }
+
+  &:active {
+    background-color: #fff2;
+  }
+}
+
+.ClipboardItemContent {
+
+}
+
+.ClipboardItemControls {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  margin-left: 0.25em;
+  padding-left: 0.25em;
+
+  border-left: 0.1em gray solid;
+}
+
+.ClipboardItemControlItem {
+  transition: all ease-out 0.2s;
+
+  padding: 0.5em;
+
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+
+  border-radius: 0.2em;
+
+  background-color: #fff1;
+
+  &:hover {
+    background-color: #fff3;
+  }
+
+  &:active {
+    background-color: #fff2;
+  }
+}

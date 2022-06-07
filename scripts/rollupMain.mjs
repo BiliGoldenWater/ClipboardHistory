@@ -9,22 +9,30 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 
+const files = [
+  { input: "src/main/index.ts", output: "app/index.js" },
+  {
+    input: "src/main/preload.ts",
+    output: "app/preload.js",
+  },
+];
+
 // see below for details on the options
 const inputOptions = {
-  input: "src/main/index.ts",
   plugins: [resolve(), commonjs(), typescript()],
   external: ["electron"],
 };
 
 const outputOptions = {
-  file: "app/index.js",
   format: "cjs",
 };
 
 export async function rollupMain() {
   if (fs.existsSync("app")) fs.rmdirSync("app", { recursive: true });
 
-  const bundle = await rollup(inputOptions);
+  for (const value of files) {
+    const bundle = await rollup({ ...inputOptions, input: value.input });
 
-  await bundle.write(outputOptions);
+    await bundle.write({ ...outputOptions, file: value.output });
+  }
 }

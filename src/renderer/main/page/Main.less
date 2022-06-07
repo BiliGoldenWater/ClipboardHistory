@@ -1,0 +1,72 @@
+/*
+ * Copyright 2021-2022 Golden_Water
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.Main {
+  display: flex;
+  flex-direction: column;
+
+  width: 100vw;
+  height: 100vh;
+
+  background-color: #444e;
+  backdrop-filter: blur(1em);
+
+  -webkit-app-region: drag;
+
+  overflow: clip;
+}
+
+.MainHistoryControls {
+  display: inline-flex;
+
+  padding: 0.25em;
+  width: 100vw;
+
+  border-bottom: 0.1em gray solid;
+}
+
+.MainHistoryControlItem {
+  transition: all ease-out 0.2s;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0.25em;
+  padding: 0.25em;
+
+  height: 1.5em;
+  width: 1.5em;
+
+  border-radius: 0.5em;
+
+  color: ghostwhite;
+  background-color: #fff1;
+
+  &:hover {
+    background-color: #fff3;
+  }
+
+  &:active {
+    background-color: #fff2;
+  }
+}
+
+.MainHistoryList {
+  flex-grow: 1;
+  width: 100vw;
+
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+
+  display: inline-flex;
+  flex-direction: column;
+
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
