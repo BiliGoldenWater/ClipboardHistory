@@ -11,6 +11,7 @@ import {
   Menu,
   nativeImage,
   Tray,
+  screen as electronScreen,
 } from "electron";
 import * as path from "path";
 import { ClipboardUtils } from "./utils/ClipboardUtils";
@@ -21,7 +22,9 @@ export const isDev = !app.isPackaged;
 const mainWindowIndex = isDev
   ? path.join("http://localhost:3000", "index.html")
   : path.join(app.getAppPath(), "app", "renderer", "main", "index.html");
-const preloadPath = path.join(app.getAppPath(), "preload.js");
+const preloadPath = isDev
+  ? path.join(app.getAppPath(), "preload.js")
+  : path.join(app.getAppPath(), "app", "preload.js");
 
 let mainWindow: BrowserWindow = null;
 
@@ -30,9 +33,12 @@ function createMainWindow() {
     mainWindow.close();
   }
 
+  const cursorPoint = electronScreen.getCursorScreenPoint();
   mainWindow = new BrowserWindow({
     height: 400,
     width: 280,
+    x: cursorPoint.x,
+    y: cursorPoint.y,
     transparent: true,
     frame: false,
     autoHideMenuBar: true,
@@ -68,7 +74,9 @@ function init() {
   ClipboardUtils.init();
 
   const icon = nativeImage.createFromPath(
-    "/Users/golden_water/Pictures/头像.png"
+    isDev
+      ? path.join(app.getAppPath(), "icon.png")
+      : path.join(app.getAppPath(), "app", "icon.png")
   );
   const tray = new Tray(icon.resize({ width: 16, height: 16 }));
   const menu = Menu.buildFromTemplate([

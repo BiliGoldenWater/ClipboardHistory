@@ -35,4 +35,6 @@ export async function rollupMain() {
 
     await bundle.write({ ...outputOptions, file: value.output });
   }
+
+  fs.copyFileSync("icon.png", "app/icon.png");
 }

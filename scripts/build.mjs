@@ -27,7 +27,7 @@ let config = {
     mirror: "https://npm.taobao.org/mirrors/electron/",
   },
 
-  mac: { target: "zip" },
+  mac: { target: "zip", icon: "icon.icns" },
   win: { target: "zip" },
   linux: { target: "zip" },
 };
@@ -36,19 +36,19 @@ await builder.build({
   config: config,
   targets: Platform.MAC.createTarget(null, Arch.universal),
 });
-await builder.build({
-  config: config,
-  targets: Platform.WINDOWS.createTarget(null, Arch.x64),
-});
-await builder.build({
-  config: config,
-  targets: Platform.WINDOWS.createTarget(null, Arch.arm64),
-});
-await builder.build({
-  config: config,
-  targets: Platform.LINUX.createTarget(null, Arch.x64),
-});
-await builder.build({
-  config: config,
-  targets: Platform.LINUX.createTarget(null, Arch.arm64),
-});
+// await builder.build({
+//   config: config,
+//   targets: Platform.WINDOWS.createTarget(null, Arch.x64),
+// });
+// await builder.build({
+//   config: config,
+//   targets: Platform.WINDOWS.createTarget(null, Arch.arm64),
+// });
+// await builder.build({
+//   config: config,
+//   targets: Platform.LINUX.createTarget(null, Arch.x64),
+// });
+// await builder.build({
+//   config: config,
+//   targets: Platform.LINUX.createTarget(null, Arch.arm64),
+// });

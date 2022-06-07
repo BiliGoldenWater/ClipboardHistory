@@ -68,7 +68,6 @@ export class ClipboardUtils {
   static copy(uuid: string) {
     const value = this.history.find((value) => value.uuid === uuid);
     if (!value) return;
-    console.log(value);
     switch (value.type) {
       case "text/plain": {
         clipboard.writeText(value.value);
