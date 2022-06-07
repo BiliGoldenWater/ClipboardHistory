@@ -53,6 +53,7 @@ function createMainWindow() {
     visibleOnFullScreen: true,
     skipTransformProcessType: false,
   });
+  mainWindow.setVibrancy("popover");
 
   function onload() {
     mainWindow?.focus();
