@@ -24,7 +24,7 @@ export class ClipboardItem extends React.Component<Props> {
 
     switch (type) {
       case "text/html": {
-        if (plainText !== "") item = <div>{plainText}</div>;
+        if (plainText) item = <div>{plainText}</div>;
         else item = <div dangerouslySetInnerHTML={{ __html: value }} />;
         break;
       }
@@ -51,8 +51,7 @@ export class ClipboardItem extends React.Component<Props> {
 
           switch (type) {
             case "text/html": {
-              if (plainText !== "")
-                dataTransfer.setData("text/plain", plainText);
+              if (plainText) dataTransfer.setData("text/plain", plainText);
               else dataTransfer.setData("text/plain", value);
               break;
             }
@@ -78,7 +77,7 @@ export class ClipboardItem extends React.Component<Props> {
               <DeleteOutlined />
             </div>
           )}
-          {plainText !== "" && (
+          {plainText && (
             <div
               className={"ClipboardItemControlItem"}
               onClick={() => {

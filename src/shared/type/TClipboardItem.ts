@@ -7,5 +7,6 @@ export type TClipboardItem = {
   uuid: string;
   type: "text/plain" | "text/html" | "image/png";
   value: string;
-  plainText: string;
+  plainText?: string;
+  isEmpty: boolean;
 };

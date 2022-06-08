@@ -6,7 +6,6 @@ import { clipboard, nativeImage } from "electron";
 import "crypto";
 import * as crypto from "crypto";
 import { TClipboardItem } from "../../shared/type/TClipboardItem";
-import parse from "node-html-parser";
 
 export class ClipboardUtils {
   static history: TClipboardItem[] = [];
@@ -23,7 +22,7 @@ export class ClipboardUtils {
       uuid: crypto.randomUUID(),
       type: "text/plain",
       value: "",
-      plainText: "",
+      isEmpty: false,
     };
 
     const formats = clipboard.availableFormats();
@@ -33,21 +32,34 @@ export class ClipboardUtils {
       isImage = true;
     } else if (formats.includes("text/html")) {
       item.type = "text/html";
-      item.value = parse(clipboard.readHTML()).querySelector("body").toString();
+      item.value = clipboard.readHTML().replaceAll(/<meta charset=[^>]*>/g, "");
     } else if (formats.includes("text/plain")) {
       item.value = clipboard.readText();
     }
-    item.plainText = clipboard.readText();
+    const hasPlainText = formats.includes("text/plain");
+    if (hasPlainText) item.plainText = clipboard.readText();
 
     const lastItem: TClipboardItem =
       this.history.length > 0
         ? this.history[this.history.length - 1]
-        : { uuid: "0", type: "text/plain", value: "", plainText: "" };
+        : {
+            uuid: "0",
+            type: "text/plain",
+            value: "",
+            isEmpty: false,
+          };
 
     if (lastItem.type !== item.type || lastItem.value !== item.value) {
       this.history = this.history.filter(
-        (value) => value.type !== item.type || value.value !== item.value
+        (value) =>
+          (value.type !== item.type || value.value !== item.value) &&
+          !value.isEmpty
       );
+
+      item.isEmpty =
+        this.isEmpty(item.value) ||
+        (item.plainText && this.isEmpty(item.plainText));
+
       this.history.push(item);
       console.log(`[ClipboardUtils.update.newItem] ${formats}`);
     }
@@ -97,7 +109,7 @@ export class ClipboardUtils {
       case "text/html": {
         clipboard.write({
           html: value.value,
-          text: value.plainText !== "" ? value.plainText : undefined,
+          text: value.plainText ? value.plainText : undefined,
         });
         break;
       }
@@ -112,5 +124,9 @@ export class ClipboardUtils {
     const value = this.history.find((value) => value.uuid === uuid);
     if (!value) return;
     clipboard.writeText(value.plainText);
+  }
+
+  static isEmpty(str: string) {
+    return !(str.match(/^[ \a\b\f\n\r\t\v]+$/) == null);
   }
 }

@@ -71,6 +71,7 @@ export class Main extends React.Component<Props, State> {
         </div>
         <div className={"MainHistoryList"}>
           {history
+            .filter((value) => !value.isEmpty)
             .map((value, index) => (
               <ClipboardItem
                 key={value.uuid}
