@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {TClipboardItem} from "../shared/type/TClipboardItem";
-import {contextBridge, ipcRenderer} from "electron";
+import { TClipboardItem } from "../shared/type/TClipboardItem";
+import { contextBridge, ipcRenderer } from "electron";
 
 export interface ApiElectron {
-  getHistory: () => TClipboardItem[];
+  getHistory: (hadItemUUIDs: string[]) => TClipboardItem[];
   removeHistory: (uuid: string) => void;
   clearHistory: () => void;
   copyItem: (uuid: string) => void;
@@ -15,9 +15,8 @@ export interface ApiElectron {
 }
 
 const apiElectron: ApiElectron = {
-
-  getHistory(): TClipboardItem[] {
-    return ipcRenderer.sendSync("history", "get");
+  getHistory(hadItemUUIDs): TClipboardItem[] {
+    return ipcRenderer.sendSync("history", "get", hadItemUUIDs);
   },
   removeHistory(uuid: string): void {
     ipcRenderer.sendSync("history", "remove", uuid);
@@ -27,8 +26,9 @@ const apiElectron: ApiElectron = {
   },
   copyItem(uuid: string): void {
     ipcRenderer.sendSync("history", "copy", uuid);
-  }, copyPlainText(uuid: string): void {
-    ipcRenderer.sendSync("history", "copyPlainText", uuid)
+  },
+  copyPlainText(uuid: string): void {
+    ipcRenderer.sendSync("history", "copyPlainText", uuid);
   },
 };
 

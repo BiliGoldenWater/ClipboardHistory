@@ -10,12 +10,14 @@ import { DeleteOutlined, FileTextOutlined } from "@ant-design/icons";
 
 class Props {
   item: TClipboardItem;
+  deletable: boolean;
 }
 
 export class ClipboardItem extends React.Component<Props> {
   render(): ReactNode {
     const {
       item: { type, uuid, value, plainText },
+      deletable,
     } = this.props;
 
     let item;
@@ -60,24 +62,22 @@ export class ClipboardItem extends React.Component<Props> {
             }
           }
         }}
+        onClick={() => {
+          window.electron.copyItem(uuid);
+        }}
       >
-        <div
-          className={"ClipboardItemContent"}
-          onClick={() => {
-            window.electron.copyItem(uuid);
-          }}
-        >
-          {item}
-        </div>
+        <div className={"ClipboardItemContent"}>{item}</div>
         <div className={"ClipboardItemControls"}>
-          <div
-            className={"ClipboardItemControlItem"}
-            onClick={() => {
-              window.electron.removeHistory(uuid);
-            }}
-          >
-            <DeleteOutlined />
-          </div>
+          {deletable && (
+            <div
+              className={"ClipboardItemControlItem"}
+              onClick={() => {
+                window.electron.removeHistory(uuid);
+              }}
+            >
+              <DeleteOutlined />
+            </div>
+          )}
           {plainText !== "" && (
             <div
               className={"ClipboardItemControlItem"}

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, startTransition } from "react";
 import "./Main.less";
 import { TClipboardItem } from "../../../shared/type/TClipboardItem";
 import { ClipboardItem } from "./clipboardItem/ClipboardItem";
@@ -22,12 +22,34 @@ export class Main extends React.Component<Props, State> {
     super(props);
 
     this.state = {
-      history: window.electron.getHistory(),
+      history: [],
     };
+  }
 
-    this.loopId = window.setInterval(() => {
-      this.setState({ history: window.electron.getHistory() });
-    }, 1e3);
+  componentDidMount() {
+    this.updateHistory();
+  }
+
+  updateHistory() {
+    startTransition(() => {
+      let oldHistory = this.state.history;
+      const hadItemUUIDs = oldHistory.map((value) => value.uuid);
+      const newHistory = window.electron.getHistory(hadItemUUIDs);
+
+      oldHistory = oldHistory.filter(
+        (value) => newHistory.findIndex((it) => it.uuid === value.uuid) !== -1
+      );
+
+      for (let item of newHistory) {
+        if (hadItemUUIDs.indexOf(item.uuid) !== -1) continue;
+
+        oldHistory.push(item);
+      }
+
+      this.setState({ history: oldHistory }, () => {
+        this.loopId = window.setTimeout(this.updateHistory.bind(this), 200);
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -48,9 +70,15 @@ export class Main extends React.Component<Props, State> {
           </div>
         </div>
         <div className={"MainHistoryList"}>
-          {history.reverse().map((value) => (
-            <ClipboardItem key={value.uuid} item={value} />
-          ))}
+          {history
+            .map((value, index) => (
+              <ClipboardItem
+                key={value.uuid}
+                item={value}
+                deletable={index < history.length - 1}
+              />
+            ))
+            .reverse()}
         </div>
       </div>
     );

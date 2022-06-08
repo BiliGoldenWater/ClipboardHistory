@@ -7,6 +7,7 @@ import { rollup } from "rollup";
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import json from "@rollup/plugin-json";
 import fs from "fs";
 
 const files = [
@@ -19,7 +20,7 @@ const files = [
 
 // see below for details on the options
 const inputOptions = {
-  plugins: [resolve(), commonjs(), typescript()],
+  plugins: [resolve(), commonjs(), typescript(), json()],
   external: ["electron"],
 };
 

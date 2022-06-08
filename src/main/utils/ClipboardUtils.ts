@@ -6,16 +6,19 @@ import { clipboard, nativeImage } from "electron";
 import "crypto";
 import * as crypto from "crypto";
 import { TClipboardItem } from "../../shared/type/TClipboardItem";
+import parse from "node-html-parser";
 
 export class ClipboardUtils {
   static history: TClipboardItem[] = [];
-  static loop: NodeJS.Timer;
+  static loop: NodeJS.Timeout;
 
   static init() {
-    this.loop = setInterval(this.update.bind(this), 1e3);
+    this.update();
   }
 
   private static update() {
+    let isImage = false;
+
     const item: TClipboardItem = {
       uuid: crypto.randomUUID(),
       type: "text/plain",
@@ -27,9 +30,10 @@ export class ClipboardUtils {
     if (formats.includes("image/png")) {
       item.type = "image/png";
       item.value = clipboard.readImage().toDataURL();
+      isImage = true;
     } else if (formats.includes("text/html")) {
       item.type = "text/html";
-      item.value = clipboard.readHTML();
+      item.value = parse(clipboard.readHTML()).querySelector("body").toString();
     } else if (formats.includes("text/plain")) {
       item.value = clipboard.readText();
     }
@@ -51,10 +55,27 @@ export class ClipboardUtils {
     if (this.history.length > 100) {
       this.history.shift();
     }
+
+    if (isImage) {
+      this.loop = setTimeout(this.update.bind(this), 2e3);
+    } else {
+      this.loop = setTimeout(this.update.bind(this), 100);
+    }
   }
 
   static stop() {
     clearInterval(this.loop);
+  }
+
+  static getHistory(hadItemUUIDs: string[]): TClipboardItem[] {
+    return this.history.map((value) => {
+      if (hadItemUUIDs.indexOf(value.uuid) === -1) return value;
+
+      return {
+        ...value,
+        value: "",
+      };
+    });
   }
 
   static remove(uuid: string) {
@@ -74,7 +95,10 @@ export class ClipboardUtils {
         break;
       }
       case "text/html": {
-        clipboard.write({ html: value.value, text: value.plainText });
+        clipboard.write({
+          html: value.value,
+          text: value.plainText !== "" ? value.plainText : undefined,
+        });
         break;
       }
       case "image/png": {

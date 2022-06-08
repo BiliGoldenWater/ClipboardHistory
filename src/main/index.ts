@@ -10,8 +10,8 @@ import {
   ipcMain,
   Menu,
   nativeImage,
-  Tray,
   screen as electronScreen,
+  Tray,
 } from "electron";
 import * as path from "path";
 import { ClipboardUtils } from "./utils/ClipboardUtils";
@@ -105,7 +105,7 @@ function init() {
     let returnValue: TClipboardItem[] | string = "";
     switch (args[0]) {
       case "get": {
-        returnValue = ClipboardUtils.history;
+        returnValue = ClipboardUtils.getHistory(args[1]);
         break;
       }
       case "remove": {
